@@ -25,8 +25,15 @@ void Option::parserAndHandle(int argc,char* argv[])
         case Parser_Name:
             param = argv[i];
             if(param.front() != '-' || param.size() == 1)
-                throw std::exception("Illegal Param");
+                throw std::invalid_argument(std::string("Illegal Param"));
             param = param.substr(1);
+            if(param == "h" || i == argc-1)
+            {
+                if(handlerStringMap_.count(param) == 0)
+                    throw std::invalid_argument("unkown Option " + param);
+                handlerStringMap_[param]("");
+                break;
+            }
             state = Parser_Value;
             break;
         case Parser_Value:
@@ -39,12 +46,10 @@ void Option::parserAndHandle(int argc,char* argv[])
             else
             {
                 if(handlerStringMap_.count(param) == 0)
-                    throw std::exception("unkown Option " + param);
+                    throw ("unkown Option " + param);
                 handlerStringMap_[param](value);
             }
             state = Parser_Name;
-            break;
-        default:
             break;
         }
     }

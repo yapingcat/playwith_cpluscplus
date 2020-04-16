@@ -1,17 +1,15 @@
 #ifndef OPTION_H
 #define OPTION_H
 
-#include <tuple>
 #include <unordered_map>
 #include <string>
 #include <functional>
-#include <algorithm>
 
 class Option
 {
 public:
     Option() = default;
-    ~Option() default;
+    ~Option() = default;
 
 public:
     void parserAndHandle(int argc,char* argv[]);
