@@ -59,6 +59,54 @@ static std::string base64Encode(const std::string& plainTxt)
     return base64String;
 }
 
+static std::string base64Decode(const std::string& base64String)
+{
+    auto length = base64String.size();
+    decltype(length) loc = 0;
+    std::string plainTxt(length / 4,0);
+    auto calcIdx = [](const char &c){ 
+        int idx = 0;
+        if( c >= 'A' && c <= 'Z')
+            idx = c - 'A';
+        else if(c >= 'a' && c <= 'z')
+            idx = c - 'a';
+        else if(c == '+')
+            idx = 62;
+        else if(c == '/')
+            idx = 63;
+        else
+            idx = -1;
+        return idx;
+    };
+    for(size_t i = 0,j = 0; i < length / 4; i++)
+    {
+        auto idx1 = calcIdx(base64String[j++]);
+        auto idx2 = calcIdx(base64String[j++]);
+        auto idx3 = calcIdx(base64String[j++]);
+        auto idx4 = calcIdx(base64String[j++]);
+        
+        auto v1 =  idx1 << 2 | idx2 >> 4;
+        plainTxt[loc++] = v1;
+        if(idx3 == -1)
+        {
+            plainTxt.pop_back();
+            plainTxt.pop_back();
+            break;
+        }
+            
+        auto v2 = idx2 << 4 | idx3 >> 2;
+        plainTxt[loc++] = v2;
+        if(idx4 == -1)
+        {
+            plainTxt.pop_back();
+            break;
+        }
+        auto v3 = calcIdx(base64String[j++]) << 6 | calcIdx(base64String[j]);
+        plainTxt[loc++] = v2;
+    }
+    return plainTxt;
+}
+
 
 
 
