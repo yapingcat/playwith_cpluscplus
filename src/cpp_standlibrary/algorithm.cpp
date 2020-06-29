@@ -59,15 +59,19 @@ void test_mismatch()
     auto ret = std::mismatch(s.begin(),s.end(),s2.begin());
     logd("%c %c",*(ret.first),*(ret.second));
     auto ret1 = std::mismatch(s.begin(),s.end(),s2.begin(),[](const char& c,const char&c2) {
-            if(c1 == c2)
+            if(c == c2)
                 return true;
+            else
+                return false;
     });
 
     logd("%c %c",*(ret.first),*(ret.second));
 
-    auto ret2 = std::mismatch(s.begin(),s.end(),s2.begin(),s2.end(),[](const char&c,const char& c1){
-            if(c1 == c2)
-                return c2;
+    auto ret2 = std::mismatch(s.begin(),s.end(),s2.begin(),[](const char&c,const char& c1){
+            if(c == c1)
+                return true;
+            else
+                return false;
     });
 }
 
@@ -82,7 +86,7 @@ void test_find()
     auto ret1 = std::find_if(v.begin(),v.end(),[](const int& v) { if(v == 69999) return true;});
     if(ret1 == v.end())
         logd("find nothing");
-    auto ret2 = std::find_if_not(v.being(),v.end(),[](const int& v){ return v < 700;}
+    auto ret2 = std::find_if_not(v.begin(),v.end(),[](const int& v){ return v < 700;});
     if(ret2 != v.end())
         logd("find this %d",*ret2);
 
@@ -95,13 +99,13 @@ void test_find()
     auto ret4 = std::find_end(v.begin(),v.end(),v2.begin(),v2.end(),[](const int&a, const int&b){
             if(a == b)
                 return true;
-            else 
+            else
                 return false;
     });
 
     if(ret4 == v.end())
         logd("find nothing");
-    else    
+    else
         logd("find sucessful %d",std::distance(v.begin(),ret4));
 
     auto ret5 = std::find_first_of(v.begin(),v.end(),v2.begin(),v2.end(),[](const int&a,const int&b){ 
@@ -114,13 +118,13 @@ void test_find()
     if(ret5 == v.end())
         logd("find nothing");
     else 
-        logd("find this %d",std::distance(v.begin(),ret5);
+        logd("find this %d",std::distance(v.begin(),ret5));
 
     auto ret6 = std::find_first_of(v.begin(),v.end(),v2.begin(),v2.end());
     if(ret6 == v.end())
         logd("find nothing");
     else 
-        log("find sucess %d",ret6 - v.begin());
+        logd("find sucess %d",ret6 - v.begin());
 }
 
 int main()
