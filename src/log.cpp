@@ -1,7 +1,7 @@
 #include "log.h"
 #include "TimeWapper.h"
 #include <thread>
-
+#include <iostream>
 
 std::function<void(const std::string&)> HappyLog::s_logFunc;
 int HappyLog::s_level = 1;
@@ -10,9 +10,10 @@ int HappyLog::s_level = 1;
 HappyLog::HappyLog(const std::string& file,int line,const std::string& levelString,int level)
     :level_(level)
 {
-    TimeWapper now;
     cache_.precision(4);
-    cache_<<TimeWapper::timeFormat("%Y-%M-%D %h:%m:%s.%S ",now)<<"["<<levelString<<"]" 
+    char buf[64] = {0};
+    TimeWapper::currentTimeFormat(buf,64);
+    cache_<<buf<<" ["<<levelString<<"]"
           <<"[" <<std::hex<<std::showbase<<std::this_thread::get_id()<<"]"<<std::dec
           <<"["<<file<<":"<<line<<"]";
 }

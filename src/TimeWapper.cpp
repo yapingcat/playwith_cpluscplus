@@ -150,3 +150,68 @@ std::string TimeWapper::timeFormat(const std::string& format,const TimeWapper& H
     }
     return rTime.str();
 }
+ 
+void TimeWapper::timeFormat(const std::string& format,const TimeWapper& HT,std::ostream& os)
+{
+    uint64_t totalMilliSecond = HT.makeMillisecondTime();
+    time_t totalSeconds = totalMilliSecond / 1000;
+	time_t millisecondPart = totalMilliSecond % 1000;
+	struct tm  timeinfo;
+#ifdef _WIN32
+	localtime_s(&timeinfo, &totalSeconds);
+#else
+	localtime_r(&totalSeconds, &timeinfo);
+#endif
+    for(auto it = format.cbegin(); it != format.cend();it++)
+    {
+        if(*it == '%')
+        {
+            if (++it == format.cend()) 
+                break;
+            switch (*it)
+            {
+            case 'Y': os << timeinfo.tm_year + 1900;
+                break;
+            case 'M': os << timeinfo.tm_mon + 1;
+                break;
+            case 'D': os << timeinfo.tm_mday;
+                break;
+            case 'h': os << timeinfo.tm_hour;
+                break;
+            case 'm': os << timeinfo.tm_min;
+                break;
+            case 's': os << timeinfo.tm_sec;
+                break;
+            case 'S': os << millisecondPart;
+                break;
+            default:
+                os <<"%" << *it;
+                break;
+            }
+        }
+        else 
+        {
+            os << *it;
+        }
+    }
+}
+
+void TimeWapper::currentTimeFormat(char* buf,int size)
+{
+    TimeWapper HT;
+    uint64_t totalMilliSecond = HT.makeMillisecondTime();
+    time_t totalSeconds = totalMilliSecond / 1000;
+	time_t millisecondPart = totalMilliSecond % 1000;
+    struct tm timeinfo;
+#ifdef _WIN32
+	localtime_s(&timeinfo, &totalSeconds);
+#else
+	localtime_r(&totalSeconds, &timeinfo);
+#endif
+    auto loc = strftime(buf,size,"%Y-%m-%d %H:%M:%S",&timeinfo);
+    sprintf(buf+loc,".%02d",millisecondPart);
+}
+
+
+
+

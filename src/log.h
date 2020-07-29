@@ -42,6 +42,11 @@ private:
 
 
 #define DebugL HappyLog(__FILE__,__LINE__,"Debug",1)
+#define TRACEL HappyLog(__FILE__,__LINE__,"Trace",2)
+#define INFOL HappyLog(__FILE__,__LINE__,"Info",3)
+#define WARNL HappyLog(__FILE__,__LINE__,"Warn",4)
+#define ERRORL HappyLog(__FILE__,__LINE__,"Erroe",5)
+#define FATAL HappyLog(__FILE__,__LINE__,"Fata",6)
 
 
 

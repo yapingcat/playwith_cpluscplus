@@ -39,6 +39,9 @@ public:
     static uint64_t getCurrentMillSecond();
     static int diffTimeWithUTC();
     static std::string timeFormat(const std::string& format,const TimeWapper& HT);
+    static void timeFormat(const std::string& format,const TimeWapper& HT,std::ostream& os);
+    static void currentTimeFormat(char* buf,int size);
+
 private:
     std::chrono::time_point<std::chrono::system_clock> ht_;    
 };
