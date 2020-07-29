@@ -108,8 +108,8 @@ std::string TimeWapper::timeFormat(const std::string& format,const TimeWapper& H
 {
     uint64_t totalMilliSecond = HT.makeMillisecondTime();
     time_t totalSeconds = totalMilliSecond / 1000;
-	time_t millisecondPart = totalMilliSecond % 1000;
-	struct tm  timeinfo;
+    time_t millisecondPart = totalMilliSecond % 1000;
+    struct tm  timeinfo;
 #ifdef _WIN32
 	localtime_s(&timeinfo, &totalSeconds);
 #else
