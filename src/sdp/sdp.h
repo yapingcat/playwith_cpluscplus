@@ -6,8 +6,6 @@
 #include <vector>
 #include <memory>
 
-#include "StringUtil.h"
-
 // Session description
 //     v=  (protocol version)
 //     o=  (originator and session identifier)
@@ -41,7 +39,7 @@
 class SdpPrinter
 {
 public:
-    virtual void print() = 0
+    virtual void print() = 0;
 };
 
 struct Origin 
@@ -153,7 +151,7 @@ struct Media
     }
 
     void parser(const std::string& media);
-}
+};
 
 struct Attribute
 {
@@ -201,12 +199,12 @@ struct lang : public Attribute
 struct cat : public Attribute
 {
     std::string category;
-}
+};
 
 struct keywds : public Attribute
 {
     std::string keywords;
-}
+};
 
 struct SessionDescribe
 {
@@ -220,7 +218,7 @@ struct SessionDescribe
     ConnectionData conn;
     TimeZones zones;
     EncryptionKeys keys;
-    std::vector<Attribute> atrrs;
+    std::vector<Attribute> attrs;
 };
 
 struct TimeDescription

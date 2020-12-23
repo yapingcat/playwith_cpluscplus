@@ -1,5 +1,5 @@
 #include "sdp.h"
-#include "StringUtil.h"
+#include "../StringUtil.h"
 
 
 void Origin::parser(const std::string& orgin)
@@ -8,7 +8,7 @@ void Origin::parser(const std::string& orgin)
     auto takeString = [&]() -> std::string {
 
         std::string value = "";
-        auto pos1 = orgin.find(pos,' ');
+        auto pos1 = orgin.find(' ',pos);
         if(pos1 == std::string::npos)
         {
             value = orgin.substr(pos);
@@ -36,15 +36,15 @@ void ConnectionData::parser(const std::string& connectionData)
     auto takeString = [&]() -> std::string {
 
         std::string value = "";
-        auto pos1 = orgin.find(pos,' ');
+        auto pos1 = connectionData.find(' ',pos);
         if(pos1 == std::string::npos)
         {
-            value = orgin.substr(pos);
-            pos = orgin.size();
+            value = connectionData.substr(pos);
+            pos = connectionData.size();
         }
         else
         {
-            value = orgin.substr(pos,pos1 - pos);
+            value = connectionData.substr(pos,pos1 - pos);
             pos = pos1 + 1;
         }
         return value;
@@ -60,15 +60,15 @@ void BandWidth::parser(const std::string& bandWidth)
     auto takeString = [&]() -> std::string {
 
         std::string value = "";
-        auto pos1 = orgin.find(pos,' ');
+        auto pos1 = bandWidth.find(' ',pos);
         if(pos1 == std::string::npos)
         {
-            value = orgin.substr(pos);
-            pos = orgin.size();
+            value = bandWidth.substr(pos);
+            pos = bandWidth.size();
         }
         else
         {
-            value = orgin.substr(pos,pos1 - pos);
+            value = bandWidth.substr(pos,pos1 - pos);
             pos = pos1 + 1;
         }
         return value;
@@ -84,15 +84,15 @@ void Timing::parser(const std::string& timing)
     auto takeString = [&]() -> std::string {
 
         std::string value = "";
-        auto pos1 = orgin.find(pos,' ');
+        auto pos1 = timing.find(' ',pos);
         if(pos1 == std::string::npos)
         {
-            value = orgin.substr(pos);
-            pos = orgin.size();
+            value = timing.substr(pos);
+            pos = timing.size();
         }
         else
         {
-            value = orgin.substr(pos,pos1 - pos);
+            value = timing.substr(pos,pos1 - pos);
             pos = pos1 + 1;
         }
         return value;
@@ -108,15 +108,15 @@ void RepeatTimes::parser(const std::string& timing)
     auto takeString = [&]() -> std::string {
 
         std::string value = "";
-        auto pos1 = orgin.find(pos,' ');
+        auto pos1 = timing.find(' ',pos);
         if(pos1 == std::string::npos)
         {
-            value = orgin.substr(pos);
-            pos = orgin.size();
+            value = timing.substr(pos);
+            pos = timing.size();
         }
         else
         {
-            value = orgin.substr(pos,pos1 - pos);
+            value = timing.substr(pos,pos1 - pos);
             pos = pos1 + 1;
         }
         return value;
@@ -133,20 +133,20 @@ void TimeZones::parser(const std::string& timeZones)
     auto takeString = [&]() -> std::string {
 
         std::string value = "";
-        auto pos1 = orgin.find(pos,' ');
+        auto pos1 = timeZones.find(' ',pos);
         if(pos1 == std::string::npos)
         {
-            value = orgin.substr(pos);
-            pos = orgin.size();
+            value = timeZones.substr(pos);
+            pos = timeZones.size();
         }
         else
         {
-            value = orgin.substr(pos,pos1 - pos);
+            value = timeZones.substr(pos,pos1 - pos);
             pos = pos1 + 1;
         }
         return value;
     };
-    while(pos != orgin.size())
+    while(pos != timeZones.size())
     {
         std::string adjustment_time  = takeString();
         std::string offset           = takeString();
@@ -167,59 +167,51 @@ void EncryptionKeys::parser(const std::string& encryption)
     }
 }
 
-void Media::parser(const std::string& media)
+void Media::parser(const std::string& mediaDescribe)
 {
     std::string::size_type pos = 0;
     auto takeString = [&]() -> std::string {
 
         std::string value = "";
-        auto pos1 = orgin.find(pos,' ');
+        auto pos1 = mediaDescribe.find(' ',pos);
         if(pos1 == std::string::npos)
         {
-            value = orgin.substr(pos);
-            pos = orgin.size();
+            value = mediaDescribe.substr(pos);
+            pos = mediaDescribe.size();
         }
         else
         {
-            value = orgin.substr(pos,pos1 - pos);
+            value = mediaDescribe.substr(pos,pos1 - pos);
             pos = pos1 + 1;
         }
         return value;
     };
 
     media                = takeString();
-    std::string ports    = takeString();
+    std::string portstr  = takeString();
     proto                = takeString();
     std::string fmtLists = takeString();
     
-    if(ports.find("/") != std::string::npos)
+    if(portstr.find("/") != std::string::npos)
     {
-        int pn = std::stoi(ports.substr(ports.find("/") + 1));
-        
+       int pn = std::stoi(portstr.substr(portstr.find("/") + 1)); 
+       int basePort = std::stoi(portstr.substr(0,portstr.find("/")));
+       for(int i = 0; i < pn; pn ++)
+       {
+           ports.push_back(basePort + i);
+       }
     }
     else
     {
-        ports.push_back(std::stoi(ports));
+        ports.push_back(std::stoi(portstr));
     }
-    
+   
 }
 
 void Attribute::parser(const std::string& attr)
 {
-    splitInTwoPart(attr,":",name,value);
+    splitInTwoPart(attr,':',name,value);
 }
-
-
-void Control::decodeValue(const std::string& value)
-{
-    auto pos = value.find(":");
-    if(pos != std::string::npos)
-    {
-        url = value.substr(pos + 1);
-    }
-}
-
-
 
 
 Sdp parser(const std::string& sdp)
@@ -239,7 +231,7 @@ Sdp parser(const std::string& sdp)
         }
     };
 
-    readLines(sdp,[&tmpSdp](const char* sdp,size_t len){
+    readLines(sdp,[&](const char* sdp,size_t len){
         std::string name = "";
         std::string value = "";
         splitInTwoPart({sdp,len},'=',name,value);
@@ -261,27 +253,29 @@ Sdp parser(const std::string& sdp)
                                     tmpSdp.mediaDescriptions.push_back(md);
                                 }
     });
+    return tmpSdp;
 }
 
 #ifdef SDP_TEST
+#include <iostream>
 
     int main()
     {
-        std::string sdp =  "v=0\r\n
-                        o=alice 2890844526 2890844526 IN IP4 host.anywhere.com\r\n
-                        s=Rtc Server\r\n
-                        c=IN IP4 host.anywhere.com\r\n
-                        t=0 0\r\n
-                        m=audio 49170 RTP/AVP 0\r\n
-                        a=rtpmap:0 PCMU/8000\r\n
-                        m=video 51372 RTP/AVP 31\r\n
-                        a=rtpmap:31 H261/90000\r\n
-                        m=video 53000 RTP/AVP 32\r\n
-                        a=rtpmap:32 MPV/90000 \r\n";
-
+        std::string sdp =  "v=0\r\n"
+                        "o=alice 2890844526 2890844526 IN IP4 host.anywhere.com\r\n"
+                        "s=Rtc Server\r\n"
+                        "c=IN IP4 host.anywhere.com\r\n"
+                        "t=0 0\r\n"
+                        "m=audio 49170 RTP/AVP 0\r\n"
+                        "a=rtpmap:0 PCMU/8000\r\n"
+                        "m=video 51372 RTP/AVP 31\r\n"
+                        "a=rtpmap:31 H261/90000\r\n"
+                        "m=video 53000 RTP/AVP 32\r\n"
+                        "a=rtpmap:32 MPV/90000 \r\n";
+        std::cout<<sdp<<std::endl;
         auto tmpsdp = parser(sdp);
 
-        std::cout<<tmpsdp.MediaDescription[0].media.media<<std::endl;
+        std::cout<<tmpsdp.mediaDescriptions[0].media.media<<std::endl;
     }
    
     

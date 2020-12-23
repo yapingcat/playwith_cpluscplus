@@ -2,7 +2,7 @@
 #include <algorithm>
 #include <cstring>
 
-void splitString(const std::string& str,char c,std::function<void(const char*,size_t)> func)
+void splitString(const std::string& str,char c,const std::function<void(const char*,size_t)>& func)
 {
     auto pre = str.begin();
     for(auto&& it = str.begin();it != str.end(); it++)
@@ -64,11 +64,12 @@ int splitInTwoPart(const std::string& str,const char c, std::string& left, std::
     found = right.find_first_not_of(' ');
     if(found != std::string::npos)
         right = right.substr(found);
+    return 0;
 }
 
 bool startWithString(const std::string& str, const std::string& startStr)
 {
-    if(start.size() > str.size())
+    if(startStr.size() > str.size())
         return false;
     return std::equal(startStr.begin(),startStr.end(),str.begin());
 }
