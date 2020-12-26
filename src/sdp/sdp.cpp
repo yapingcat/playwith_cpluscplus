@@ -190,7 +190,7 @@ void Media::parser(const std::string& mediaDescribe)
     media                = takeString();
     std::string portstr  = takeString();
     proto                = takeString();
-    std::string fmtLists = takeString();
+    std::string fmtLists = mediaDescribe.substr(pos);
     
     if(portstr.find("/") != std::string::npos)
     {
@@ -205,7 +205,12 @@ void Media::parser(const std::string& mediaDescribe)
     {
         ports.push_back(std::stoi(portstr));
     }
-   
+    auto tmpfmt = splitString(fmtLists,' ');
+    for(auto &&fmt : tmpfmt)
+    {
+        fmts.push_back(std::stoi(fmt));
+    }
+
 }
 
 void Attribute::parser(const std::string& attr)
@@ -266,7 +271,7 @@ Sdp parser(const std::string& sdp)
                         "s=Rtc Server\r\n"
                         "c=IN IP4 host.anywhere.com\r\n"
                         "t=0 0\r\n"
-                        "m=audio 49170 RTP/AVP 0\r\n"
+                        "m=audio 49170 RTP/AVP 0 12 15\r\n"
                         "a=rtpmap:0 PCMU/8000\r\n"
                         "m=video 51372 RTP/AVP 31\r\n"
                         "a=rtpmap:31 H261/90000\r\n"
@@ -276,6 +281,11 @@ Sdp parser(const std::string& sdp)
         auto tmpsdp = parser(sdp);
 
         std::cout<<tmpsdp.mediaDescriptions[0].media.media<<std::endl;
+        std::cout<<tmpsdp.mediaDescriptions[0].media.ports[0]<<std::endl;
+        std::cout<<tmpsdp.mediaDescriptions[0].media.proto<<std::endl;
+        for(auto && fmt : tmpsdp.mediaDescriptions[0].media.fmts)
+            std::cout<<fmt<<std::endl;
+        std::cout<<tmpsdp.sessionDescription.sessionName<<std::endl;
     }
    
     
