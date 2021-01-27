@@ -50,7 +50,7 @@ int main(int argc, char* argv[])
         pkg.ssrc = 0x12345678;
         tm += 40;
         pkg.payload.resize(1000,1);
-        auto rtp = endcode(pkg);
+        auto rtp = encode(pkg);
         s.send_to(asio::buffer(rtp), *endpoints.begin());
 
         std::this_thread::sleep_for(std::chrono::milliseconds(40));

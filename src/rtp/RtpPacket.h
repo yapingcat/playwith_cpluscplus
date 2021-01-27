@@ -1,8 +1,12 @@
 #ifndef RTPPACKET_H
 #define RTPPACKET_H
 
-struct RtpPakcet
-{    
+#include <cstdint>
+#include <vector>
+#include <array>
+
+struct RtpPacket
+{   
     enum { RTP_FIX_HEAD = 12 };
 
     uint8_t version =  0;
@@ -20,20 +24,20 @@ struct RtpPakcet
     std::vector<uint8_t> extensions; 
     std::vector<uint8_t> payload;
     std::vector<uint8_t> paddings;
-    operator bool()
+    explicit operator bool() const
     {
-        return version_ == 2 && pt < 127
-                && (csrcs_.size() == csrccount && csrccount < 16 )
-                    && (!extension || (extensions.size() > 0 && extensions.size() % 4 == 0) 
+        return version == 2 && pt < 127
+                && (csrcs.size() == csrccount && csrccount < 16 )
+                    && (!extension || (extensions.size() > 0 && extensions.size() % 4 == 0))
                         && (!padding || paddings.size() > 0);
     }
 };
 
-std::size_t calcRtpHeaderLen(const RtpPakcet& pkg);
+std::size_t calcRtpHeaderLen(const RtpPacket& pkg);
 
-RtpPakcet decode(uint8_t* packet,std::size_t len);
+RtpPacket decode(uint8_t* packet,std::size_t len);
 
-std::vector<uint8_t> encode(const RtpPakcet& pkg);
+std::vector<uint8_t> encode(const RtpPacket& pkg);
 
 
 
