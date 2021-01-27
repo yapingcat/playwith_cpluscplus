@@ -37,12 +37,24 @@ int main(int argc, char* argv[])
     udp::resolver::results_type endpoints =
       resolver.resolve(udp::v4(), argv[1], argv[2]);
     
+    uint16_t seq = 0;
+    uint32_t tm = 0;
     for(;;)
     {
         RtpPacket pkg;
         pkg.version = 2;
-        pkg.padd
-        s.send_to(asio::buffer(request, request_length), *endpoints.begin());
+        pkg.padding = 0;
+        pkg.pt = 96;
+        pkg.sequence = seq++;
+        pkg.timeStamp = tm;
+        pkg.ssrc = 0x12345678;
+        tm += 40;
+        pkg.payload.resize(1000,1);
+        auto rtp = endcode(pkg);
+        s.send_to(asio::buffer(rtp), *endpoints.begin());
+
+        std::this_thread::sleep_for(std::chrono::milliseconds(40));
+
     }
 
   }
