@@ -1,5 +1,7 @@
 #include "gostring.h"
 #include <cctype>
+#include <algorithm>
+#include <iterator>
 
 namespace gostring
 {
@@ -66,5 +68,58 @@ namespace gostring
             }
         }
         return a;
+    }
+
+    bool hasPrefix(const string &s, const string &prefix)
+    {
+        auto len1 = s.size();
+        auto len2 = prefix.size();
+        if (len1 < len2 || len2 == 0)
+            return false;
+        return std::equal(prefix.begin(), prefix.end(), s.begin());
+    }
+
+    bool hasSuffix(const string &s, const string &suffix)
+    {
+        auto len1 = s.size();
+        auto len2 = suffix.size();
+        if (len1 < len2 || len2 == 0)
+            return false;
+        return std::equal(suffix.rbegin(), suffix.rend(), s.rbegin());
+    }
+
+    bool contains(const string &s, const string &substr)
+    {
+        auto found = s.find(substr);
+        return found == string::npos || s.empty() || substr.empty() ? false : true;
+    }
+
+    bool containsAny(const string &s, const string &chars)
+    {
+        return std::any_of(s.begin(), s.end(), [&](const char &c)
+                           { return chars.find(c) == string::npos ? false : true; });
+    }
+
+    int index(const string &s, const string &sep)
+    {
+        auto found = s.find(sep);
+        return found == string::npos || sep.empty() || s.empty() ? -1 : found;
+    }
+
+    int indexByte(const string &s, char c)
+    {
+        return index(s, string(1, c));
+    }
+
+    int indexAny(const string &s, const string &chars)
+    {
+        auto found = std::find_first_of(s.begin(), s.end(), chars.begin(), chars.end());
+        return found == s.end() ? -1 : std::distance(s.begin(), found);
+    }
+
+    int indexFunc(const string &s, std::function<bool(const char &)> pred)
+    {
+        auto found = std::find_if(s.begin(), s.end(), pred);
+        return found == s.end() ? -1 : std::distance(found, s.begin());
     }
 }
