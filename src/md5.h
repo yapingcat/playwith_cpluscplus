@@ -1,14 +1,11 @@
 #ifndef MD5_H
 #define MD5_H
 
-#include <array>
 #include <string>
-#include <vector>
-using std::array;
 using std::string;
-using std::vector;
 
-class MD5 {
+class MD5
+{
    public:
 	void sum(const string& content);
 	void sum(const char* data, std::size_t len);
