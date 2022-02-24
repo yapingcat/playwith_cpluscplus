@@ -11,6 +11,7 @@ class MD5
 	void sum(const char* data, std::size_t len);
 	void sumFile(const string& path);
 	std::string final();
+	void reset();
 
    private:
 	void processChunk(const uint8_t* chunk);

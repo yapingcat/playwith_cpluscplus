@@ -163,6 +163,16 @@ std::string MD5::final()
 	return digest;
 }
 
+void MD5::reset()
+{
+	a_ = 0x67452301;
+	b_ = 0xEFCDAB89;
+	c_ = 0x98BADCFE;
+	d_ = 0x10325476;
+	cache_.clear();
+	total_ = 0;
+}
+
 #ifdef MD5_TEST
 
 #include <iostream>
