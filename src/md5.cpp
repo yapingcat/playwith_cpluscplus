@@ -40,11 +40,7 @@ void MD5::sumFile(const string& path)
 	std::ifstream in_(path, std::ifstream::binary | std::ifstream::in);
 	if (!in_)
 	{
-		throw std::runtime_error(
-		    "file "
-		    "open "
-		    "faile"
-		    "d");
+		throw std::runtime_error("open file failed");
 	}
 	char buf[64 * 512] = {0};
 	while (in_.read(buf, 64 * 512))
