@@ -21,8 +21,8 @@ class MD5
 	uint32_t b_ = 0xEFCDAB89;
 	uint32_t c_ = 0x98BADCFE;
 	uint32_t d_ = 0x10325476;
-	string cache_;
-	uint64_t total_;
+	string cache_ = "";
+	uint64_t total_ = 0;
 };
 
 #endif
